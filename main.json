@@ -1,9 +1,9 @@
 {
-    "id": "com.yarivkraus.tablewidget",
-    "version": "1.0.9",
-    "name": "Yariv's Table Widget",
-    "description": "Custom SAC widget from yarivkraus",
-    "newInstancePrefix": "TableWidget",
+    "id": "com.yarivkraus.simpletable",
+    "version": "2.0.0",
+    "name": "Yariv's Simple Table",
+    "description": "Minimalist SAC Data Table",
+    "newInstancePrefix": "SimpleTable",
     "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDg1NGEwIiBkPSJNMyA0djE2aDEzVjRIM3ptMTEgMTRINXYtMmgxMHYyem0wLTRINXYtMmgxMHYyem0wLTRINVY4aDEwdjJ6bTUtNHYxNmgyVjZoLTJ6Ii8+PC9zdmc+",
     "vendor": "Custom",
     "eula": "",
@@ -11,15 +11,15 @@
     "webcomponents": [
         {
             "kind": "main",
-            "tag": "com-yarivkraus-tablewidget",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=9",
+            "tag": "com-yarivkraus-simpletable",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=200",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
-            "tag": "com-yarivkraus-tablewidget-styling",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=9",
+            "tag": "com-yarivkraus-simpletable-styling",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=200",
             "integrity": "",
             "ignoreIntegrity": true
         }
@@ -28,42 +28,23 @@
         "title": {
             "type": "string",
             "description": "Widget Title",
-            "default": "Data Table"
-        },
-        "showInputFields": {
-            "type": "boolean",
-            "description": "Show Input Fields",
-            "default": true
-        },
-        "maxRows": {
-            "type": "integer",
-            "description": "Maximum Rows to Display",
-            "default": 10
+            "default": "Simple Data Table"
         },
         "primaryColor": {
             "type": "string",
-            "description": "Primary Theme Color",
+            "description": "Primary Color",
             "default": "#0854a0"
         }
     },
     "methods": {
-        "addRow": {
-            "description": "Add a new row to the table"
-        },
-        "clearTable": {
-            "description": "Clear all table data"
-        },
         "getData": {
-            "description": "Get current table data",
+            "description": "Get data",
             "returnType": "any"
         }
     },
     "events": {
         "onRowSelect": {
-            "description": "Triggered when a row is selected"
-        },
-        "onDataChange": {
-            "description": "Triggered when data changes"
+            "description": "Row selected"
         }
     },
     "dataBindings": {
