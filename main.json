@@ -1,24 +1,24 @@
 {
-    "id": "com.sap.sample.tablewidget",
-    "version": "1.0.1",
-    "name": "Table Widget with Input Fields",
-    "description": "Custom SAC widget with table display and input fields",
+    "id": "com.yarivkraus.tablewidget",
+    "version": "1.0.3",
+    "name": "Yariv's Table Widget",
+    "description": "Custom SAC widget from yarivkraus",
     "newInstancePrefix": "TableWidget",
-    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDg1NGEwIiBkPSJNMyA0djE2aDEzVjRIM3ptMTEgMTRINXYtMmgxMHYyem0wLTRINXYtMmgxMHYyem0wLTRINVY4aDEwdjJ6bTUtNHYxNmgyVjZoLTJ6Ii8+PC9zdmc+",
-    "vendor": "Custom",
+    "icon": "https://share.google/2rFhCdyznDK5P36BS",
+    "vendor": "Kraus and Dauthers",
     "eula": "",
     "license": "",
     "webcomponents": [
         {
             "kind": "main",
-            "tag": "com-sap-sample-tablewidget",
+            "tag": "com-yarivkraus-tablewidget",
             "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
-            "tag": "com-sap-sample-tablewidget-styling",
+            "tag": "com-yarivkraus-tablewidget-styling",
             "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js",
             "integrity": "",
             "ignoreIntegrity": true
