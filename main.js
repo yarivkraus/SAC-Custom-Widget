@@ -189,7 +189,7 @@
     
     <div class="widget-container">
       <div class="widget-header">
-        <div class="widget-title" id="widgetTitle">Data Table</div>
+        <div class="widget-title" id="widgetTitle">Data Table (v1.0.2)</div>
       </div>
       
       <div class="input-section" id="inputSection">

@@ -50,6 +50,7 @@
     </style>
     
     <div class="styling-panel">
+      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.2</div>
       <div class="styling-section">
         <label class="styling-label" for="titleInput">Widget Title</label>
         <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title">
@@ -120,8 +121,11 @@
       }));
     }
   }
-
-  if (!customElements.get("com-yarivkraus-tablewidget-styling")) {
+  console.log("SAC Widget Styling - Script loaded");
+  try {
     customElements.define("com-yarivkraus-tablewidget-styling", TableWidgetStyling);
+    console.log("SAC Widget Styling - Custom Element defined");
+  } catch (e) {
+    console.warn("SAC Widget Styling - Custom Element might already be defined:", e);
   }
 })();
