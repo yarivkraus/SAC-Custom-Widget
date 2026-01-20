@@ -1,85 +1,142 @@
-{
-    "id": "com.yarivkraus.tablewidget",
-    "version": "1.0.7",
-    "name": "Yariv's Table Widget",
-    "description": "Custom SAC widget from yarivkraus",
-    "newInstancePrefix": "TableWidget",
-    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDg1NGEwIiBkPSJNMyA0djE2aDEzVjRIM3ptMTEgMTRINXYtMmgxMHYyem0wLTRINXYtMmgxMHYyem0wLTRINVY4aDEwdjJ6bTUtNHYxNmgyVjZoLTJ6Ii8+PC9zdmc+",
-    "vendor": "Custom",
-    "eula": "",
-    "license": "",
-    "webcomponents": [
-        {
-            "kind": "main",
-            "tag": "com-yarivkraus-tablewidget",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=7",
-            "integrity": "",
-            "ignoreIntegrity": true
-        },
-        {
-            "kind": "styling",
-            "tag": "com-yarivkraus-tablewidget-styling",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=7",
-            "integrity": "",
-            "ignoreIntegrity": true
-        }
-    ],
-    "properties": {
-        "title": {
-            "type": "string",
-            "description": "Widget Title",
-            "default": "Data Table"
-        },
-        "showInputFields": {
-            "type": "boolean",
-            "description": "Show Input Fields",
-            "default": true
-        },
-        "maxRows": {
-            "type": "integer",
-            "description": "Maximum Rows to Display",
-            "default": 10
-        },
-        "primaryColor": {
-            "type": "string",
-            "description": "Primary Theme Color",
-            "default": "#0854a0"
-        }
-    },
-    "methods": {
-        "addRow": {
-            "description": "Add a new row to the table"
-        },
-        "clearTable": {
-            "description": "Clear all table data"
-        },
-        "getData": {
-            "description": "Get current table data",
-            "returnType": "any"
-        }
-    },
-    "events": {
-        "onRowSelect": {
-            "description": "Triggered when a row is selected"
-        },
-        "onDataChange": {
-            "description": "Triggered when data changes"
-        }
-    },
-    "dataBindings": {
-        "tableData": {
-            "feeds": [
-                {
-                    "id": "dimensions",
-                    "type": "dimension",
-                    "description": "Dimensions"
-                },
-                {
-                    "id": "measures",
-                    "type": "mainStructureMember",
-                    "description": "Measures"
-                }
-            ]
-        }
+(function () {
+  try {
+    console.log("SAC Widget Styling - Script Execution Started (v1.0.8)");
+    let template = document.createElement("template");
+    template.innerHTML = `
+    <style>
+      /* Styling panel for SAC custom widget */
+      .styling-panel {
+        font-family: "72", "72full", Arial, Helvetica, sans-serif;
+        padding: 16px;
+      }
+      
+      .styling-section {
+        margin-bottom: 20px;
+      }
+      
+      .styling-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #32363a;
+      }
+      
+      .styling-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #89919a;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      
+      .color-picker {
+        width: 100%;
+        height: 40px;
+        border: 1px solid #89919a;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+    </style>
+    
+    <div class="styling-panel">
+      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.8</div>
+      <div class="styling-section">
+        <label class="styling-label" for="titleInput">Widget Title</label>
+        <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title" aria-label="Widget Title">
+      </div>
+      
+      <div class="styling-section">
+        <label class="styling-label" for="showInputCheckbox">Show Input Fields</label>
+        <div class="checkbox-container">
+          <input type="checkbox" class="checkbox" id="showInputCheckbox" checked aria-label="Show Input Fields">
+          <label for="showInputCheckbox">Display input section</label>
+        </div>
+      </div>
+      
+      <div class="styling-section">
+        <label class="styling-label" for="maxRowsInput">Maximum Rows</label>
+        <input type="number" class="styling-input" id="maxRowsInput" min="1" max="100" value="10" aria-label="Maximum Rows">
+      </div>
+      
+      <div class="styling-section">
+        <label class="styling-label" for="primaryColorPicker">Primary Color</label>
+        <input type="color" class="color-picker" id="primaryColorPicker" value="#0854a0" aria-label="Primary Color">
+      </div>
+    </div>
+  `;
+
+    class TableWidgetStyling extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: "open" });
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+        this._initializeElements();
+        this._attachEventListeners();
+      }
+
+      _initializeElements() {
+        this._titleInput = this.shadowRoot.getElementById("titleInput");
+        this._showInputCheckbox = this.shadowRoot.getElementById("showInputCheckbox");
+        this._maxRowsInput = this.shadowRoot.getElementById("maxRowsInput");
+        this._primaryColorPicker = this.shadowRoot.getElementById("primaryColorPicker");
+      }
+
+      _attachEventListeners() {
+        this._titleInput.addEventListener("input", () => {
+          this._firePropertyChange("title", this._titleInput.value);
+        });
+
+        this._showInputCheckbox.addEventListener("change", () => {
+          this._firePropertyChange("showInputFields", this._showInputCheckbox.checked);
+        });
+
+        this._maxRowsInput.addEventListener("input", () => {
+          this._firePropertyChange("maxRows", parseInt(this._maxRowsInput.value));
+        });
+
+        this._primaryColorPicker.addEventListener("input", () => {
+          this._firePropertyChange("primaryColor", this._primaryColorPicker.value);
+        });
+      }
+
+      _firePropertyChange(propertyName, value) {
+        this.dispatchEvent(new CustomEvent("propertiesChanged", {
+          detail: {
+            properties: {
+              [propertyName]: value
+            }
+          }
+        }));
+      }
     }
-}
+    console.log("SAC Widget Styling - Script loaded");
+    try {
+      // Dual-Tag strategy for styling panel
+      if (!customElements.get("com-yarivkraus-tablewidget-styling")) {
+        customElements.define("com-yarivkraus-tablewidget-styling", TableWidgetStyling);
+      }
+      if (!customElements.get("com-sap-sample-tablewidget-styling")) {
+        customElements.define("com-sap-sample-tablewidget-styling", TableWidgetStyling);
+      }
+      console.log("SAC Widget Styling - Custom Element defined (Dual-Tag)");
+    } catch (e) {
+      console.warn("SAC Widget Styling - Custom Element might already be defined:", e);
+    }
+  } catch (e) {
+    console.error("SAC Widget Styling - TOP LEVEL CRASH in styling.js:", e);
+  }
+})();
