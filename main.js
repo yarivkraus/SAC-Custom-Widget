@@ -1,4 +1,5 @@
 (function () {
+  console.log("SAC Widget - Main Script Execution Started (v1.0.3)");
   let template = document.createElement("template");
   template.innerHTML = `
     <style>
@@ -189,7 +190,7 @@
     
     <div class="widget-container">
       <div class="widget-header">
-        <div class="widget-title" id="widgetTitle">Data Table (v1.0.2)</div>
+        <div class="widget-title" id="widgetTitle">Data Table (v1.0.3)</div>
       </div>
       
       <div class="input-section" id="inputSection">
@@ -590,7 +591,11 @@
     }
   }
 
-  if (!customElements.get("com-yarivkraus-tablewidget")) {
+  console.log("SAC Widget - Script logic processed, attempting to define custom element...");
+  try {
     customElements.define("com-yarivkraus-tablewidget", TableWidget);
+    console.log("SAC Widget - Main Widget defined successfully");
+  } catch (e) {
+    console.error("SAC Widget - Custom Element definition error:", e);
   }
 })();
