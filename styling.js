@@ -1,6 +1,6 @@
 (function () {
   try {
-    console.log("SAC Widget Styling - Script Execution Started (v1.0.5)");
+    console.log("SAC Widget Styling - Script Execution Started (v1.0.7)");
     let template = document.createElement("template");
     template.innerHTML = `
     <style>
@@ -52,7 +52,7 @@
     </style>
     
     <div class="styling-panel">
-      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.5</div>
+      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.7</div>
       <div class="styling-section">
         <label class="styling-label" for="titleInput">Widget Title</label>
         <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title">
@@ -125,8 +125,14 @@
     }
     console.log("SAC Widget Styling - Script loaded");
     try {
-      customElements.define("com-yarivkraus-tablewidget-styling", TableWidgetStyling);
-      console.log("SAC Widget Styling - Custom Element defined");
+      // Dual-Tag strategy for styling panel
+      if (!customElements.get("com-yarivkraus-tablewidget-styling")) {
+        customElements.define("com-yarivkraus-tablewidget-styling", TableWidgetStyling);
+      }
+      if (!customElements.get("com-sap-sample-tablewidget-styling")) {
+        customElements.define("com-sap-sample-tablewidget-styling", TableWidgetStyling);
+      }
+      console.log("SAC Widget Styling - Custom Element defined (Dual-Tag)");
     } catch (e) {
       console.warn("SAC Widget Styling - Custom Element might already be defined:", e);
     }
