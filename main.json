@@ -1,24 +1,25 @@
 {
     "id": "com.yarivkraus.tablewidget",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "name": "Yariv's Table Widget",
     "description": "Custom SAC widget from yarivkraus",
     "newInstancePrefix": "TableWidget",
-    "vendor": "Kraus and Dauthers",
+    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDg1NGEwIiBkPSJNMyA0djE2aDEzVjRIM3ptMTEgMTRINXYtMmgxMHYyem0wLTRINXYtMmgxMHYyem0wLTRINVY4aDEwdjJ6bTUtNHYxNmgyVjZoLTJ6Ii8+PC9zdmc+",
+    "vendor": "Custom",
     "eula": "",
     "license": "",
     "webcomponents": [
         {
             "kind": "main",
             "tag": "com-yarivkraus-tablewidget",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=3",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=5",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
             "tag": "com-yarivkraus-tablewidget-styling",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=3",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=5",
             "integrity": "",
             "ignoreIntegrity": true
         }
@@ -82,4 +83,3 @@
         }
     }
 }
-
