@@ -484,15 +484,19 @@
           const editBtn = row.querySelector(".edit-btn");
           const deleteBtn = row.querySelector(".delete-btn");
 
-          editBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            this._editRow(item.id);
-          });
+          if (editBtn) {
+            editBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              this._editRow(item.id);
+            });
+          }
 
-          deleteBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            this._deleteRow(item.id);
-          });
+          if (deleteBtn) {
+            deleteBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              this._deleteRow(item.id);
+            });
+          }
 
           this._tableBody.appendChild(row);
         });
