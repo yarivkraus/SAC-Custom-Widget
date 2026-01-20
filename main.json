@@ -1,0 +1,64 @@
+{
+    "id": "com.sap.sample.tablewidget",
+    "version": "1.0.0",
+    "name": "Table Widget with Input Fields",
+    "description": "Custom SAC widget with table display and input fields",
+    "newInstancePrefix": "TableWidget",
+    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDg1NGEwIiBkPSJNMyA0djE2aDEzVjRIM3ptMTEgMTRINXYtMmgxMHYyem0wLTRINXYtMmgxMHYyem0wLTRINVY4aDEwdjJ6bTUtNHYxNmgyVjZoLTJ6Ii8+PC9zdmc+",
+    "vendor": "Custom",
+    "eula": "",
+    "license": "",
+    "webcomponents": [
+        {
+            "kind": "main",
+            "tag": "com-sap-sample-tablewidget",
+            "url": "https://localhost:8080/main.js",
+            "integrity": "",
+            "ignoreIntegrity": true
+        },
+        {
+            "kind": "styling",
+            "tag": "com-sap-sample-tablewidget-styling",
+            "url": "https://localhost:8080/styling.js",
+            "integrity": "",
+            "ignoreIntegrity": true
+        }
+    ],
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "Widget Title",
+            "default": "Data Table"
+        },
+        "showInputFields": {
+            "type": "boolean",
+            "description": "Show Input Fields",
+            "default": true
+        },
+        "maxRows": {
+            "type": "integer",
+            "description": "Maximum Rows to Display",
+            "default": 10
+        }
+    },
+    "methods": {
+        "addRow": {
+            "description": "Add a new row to the table"
+        },
+        "clearTable": {
+            "description": "Clear all table data"
+        },
+        "getData": {
+            "description": "Get current table data",
+            "returnType": "any"
+        }
+    },
+    "events": {
+        "onRowSelect": {
+            "description": "Triggered when a row is selected"
+        },
+        "onDataChange": {
+            "description": "Triggered when data changes"
+        }
+    }
+}

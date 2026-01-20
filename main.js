@@ -1,0 +1,472 @@
+(function () {
+    let template = document.createElement("template");
+    template.innerHTML = `
+    <style>
+      :host {
+        display: block;
+        font-family: "72", "72full", Arial, Helvetica, sans-serif;
+        padding: 16px;
+      }
+      
+      .widget-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        height: 100%;
+      }
+      
+      .widget-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #0854a0;
+      }
+      
+      .widget-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #0854a0;
+      }
+      
+      .input-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        padding: 12px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+      }
+      
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .input-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #32363a;
+      }
+      
+      .input-field {
+        padding: 8px;
+        border: 1px solid #89919a;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+      }
+      
+      .input-field:focus {
+        outline: none;
+        border-color: #0854a0;
+        box-shadow: 0 0 0 1px #0854a0;
+      }
+      
+      .button-group {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      
+      .btn-primary {
+        background-color: #0854a0;
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background-color: #0a6ed1;
+      }
+      
+      .btn-secondary {
+        background-color: #e5e5e5;
+        color: #32363a;
+      }
+      
+      .btn-secondary:hover {
+        background-color: #d5d5d5;
+      }
+      
+      .table-container {
+        flex: 1;
+        overflow: auto;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+      }
+      
+      thead {
+        position: sticky;
+        top: 0;
+        background-color: #f5f5f5;
+        z-index: 1;
+      }
+      
+      th {
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #32363a;
+        border-bottom: 2px solid #0854a0;
+        font-size: 14px;
+      }
+      
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 14px;
+        color: #32363a;
+      }
+      
+      tbody tr {
+        transition: background-color 0.2s;
+        cursor: pointer;
+      }
+      
+      tbody tr:hover {
+        background-color: #f0f7ff;
+      }
+      
+      tbody tr.selected {
+        background-color: #e3f2fd;
+      }
+      
+      .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #89919a;
+        font-style: italic;
+      }
+      
+      .actions-cell {
+        display: flex;
+        gap: 8px;
+      }
+      
+      .action-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      
+      .edit-btn {
+        background-color: #0854a0;
+        color: white;
+      }
+      
+      .edit-btn:hover {
+        background-color: #0a6ed1;
+      }
+      
+      .delete-btn {
+        background-color: #dc3545;
+        color: white;
+      }
+      
+      .delete-btn:hover {
+        background-color: #c82333;
+      }
+    </style>
+    
+    <div class="widget-container">
+      <div class="widget-header">
+        <div class="widget-title" id="widgetTitle">Data Table</div>
+      </div>
+      
+      <div class="input-section" id="inputSection">
+        <div class="input-group">
+          <label class="input-label">Name</label>
+          <input type="text" class="input-field" id="inputName" placeholder="Enter name">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Value</label>
+          <input type="number" class="input-field" id="inputValue" placeholder="Enter value">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Category</label>
+          <select class="input-field" id="inputCategory">
+            <option value="">Select category</option>
+            <option value="Sales">Sales</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Operations">Operations</option>
+            <option value="Finance">Finance</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Date</label>
+          <input type="date" class="input-field" id="inputDate">
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button class="btn btn-primary" id="addBtn">Add Row</button>
+        <button class="btn btn-secondary" id="clearBtn">Clear Table</button>
+        <button class="btn btn-secondary" id="exportBtn">Export Data</button>
+      </div>
+      
+      <div class="table-container">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="6" class="no-data">No data available. Add rows using the input fields above.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+    class TableWidget extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: "open" });
+            this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+            this._props = {
+                title: "Data Table",
+                showInputFields: true,
+                maxRows: 10
+            };
+
+            this._data = [];
+            this._nextId = 1;
+            this._selectedRow = null;
+
+            this._initializeElements();
+            this._attachEventListeners();
+        }
+
+        _initializeElements() {
+            this._titleElement = this.shadowRoot.getElementById("widgetTitle");
+            this._inputSection = this.shadowRoot.getElementById("inputSection");
+            this._inputName = this.shadowRoot.getElementById("inputName");
+            this._inputValue = this.shadowRoot.getElementById("inputValue");
+            this._inputCategory = this.shadowRoot.getElementById("inputCategory");
+            this._inputDate = this.shadowRoot.getElementById("inputDate");
+            this._addBtn = this.shadowRoot.getElementById("addBtn");
+            this._clearBtn = this.shadowRoot.getElementById("clearBtn");
+            this._exportBtn = this.shadowRoot.getElementById("exportBtn");
+            this._tableBody = this.shadowRoot.getElementById("tableBody");
+        }
+
+        _attachEventListeners() {
+            this._addBtn.addEventListener("click", () => this._addRow());
+            this._clearBtn.addEventListener("click", () => this._clearTable());
+            this._exportBtn.addEventListener("click", () => this._exportData());
+
+            // Allow Enter key to add row
+            [this._inputName, this._inputValue, this._inputCategory, this._inputDate].forEach(input => {
+                input.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        this._addRow();
+                    }
+                });
+            });
+        }
+
+        _addRow() {
+            const name = this._inputName.value.trim();
+            const value = parseFloat(this._inputValue.value) || 0;
+            const category = this._inputCategory.value;
+            const date = this._inputDate.value;
+
+            if (!name) {
+                alert("Please enter a name");
+                return;
+            }
+
+            const newRow = {
+                id: this._nextId++,
+                name: name,
+                value: value,
+                category: category || "N/A",
+                date: date || new Date().toISOString().split('T')[0]
+            };
+
+            this._data.push(newRow);
+            this._renderTable();
+            this._clearInputs();
+            this._fireEvent("onDataChange");
+        }
+
+        _editRow(id) {
+            const row = this._data.find(r => r.id === id);
+            if (row) {
+                this._inputName.value = row.name;
+                this._inputValue.value = row.value;
+                this._inputCategory.value = row.category === "N/A" ? "" : row.category;
+                this._inputDate.value = row.date;
+
+                // Remove the row so it can be re-added with updated values
+                this._deleteRow(id);
+            }
+        }
+
+        _deleteRow(id) {
+            this._data = this._data.filter(r => r.id !== id);
+            this._renderTable();
+            this._fireEvent("onDataChange");
+        }
+
+        _clearTable() {
+            if (this._data.length > 0 && !confirm("Are you sure you want to clear all data?")) {
+                return;
+            }
+            this._data = [];
+            this._nextId = 1;
+            this._renderTable();
+            this._fireEvent("onDataChange");
+        }
+
+        _clearInputs() {
+            this._inputName.value = "";
+            this._inputValue.value = "";
+            this._inputCategory.value = "";
+            this._inputDate.value = "";
+            this._inputName.focus();
+        }
+
+        _exportData() {
+            const dataStr = JSON.stringify(this._data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "table-data.json";
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        _renderTable() {
+            this._tableBody.innerHTML = "";
+
+            if (this._data.length === 0) {
+                const row = document.createElement("tr");
+                row.innerHTML = '<td colspan="6" class="no-data">No data available. Add rows using the input fields above.</td>';
+                this._tableBody.appendChild(row);
+                return;
+            }
+
+            this._data.forEach(item => {
+                const row = document.createElement("tr");
+                row.dataset.id = item.id;
+
+                row.innerHTML = `
+          <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td>${item.value.toLocaleString()}</td>
+          <td>${item.category}</td>
+          <td>${item.date}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="action-btn edit-btn" data-id="${item.id}">Edit</button>
+              <button class="action-btn delete-btn" data-id="${item.id}">Delete</button>
+            </div>
+          </td>
+        `;
+
+                row.addEventListener("click", (e) => {
+                    if (!e.target.classList.contains("action-btn")) {
+                        this._selectRow(row);
+                    }
+                });
+
+                const editBtn = row.querySelector(".edit-btn");
+                const deleteBtn = row.querySelector(".delete-btn");
+
+                editBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    this._editRow(item.id);
+                });
+
+                deleteBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    this._deleteRow(item.id);
+                });
+
+                this._tableBody.appendChild(row);
+            });
+        }
+
+        _selectRow(row) {
+            // Remove previous selection
+            const previousSelected = this._tableBody.querySelector(".selected");
+            if (previousSelected) {
+                previousSelected.classList.remove("selected");
+            }
+
+            // Add new selection
+            row.classList.add("selected");
+            this._selectedRow = parseInt(row.dataset.id);
+            this._fireEvent("onRowSelect");
+        }
+
+        _fireEvent(eventName) {
+            this.dispatchEvent(new CustomEvent(eventName, {
+                detail: {
+                    data: this._data,
+                    selectedRow: this._selectedRow
+                }
+            }));
+        }
+
+        // Public methods
+        addRow() {
+            this._addRow();
+        }
+
+        clearTable() {
+            this._clearTable();
+        }
+
+        getData() {
+            return JSON.parse(JSON.stringify(this._data));
+        }
+
+        // Property setters
+        set title(value) {
+            this._props.title = value;
+            this._titleElement.textContent = value;
+        }
+
+        set showInputFields(value) {
+            this._props.showInputFields = value;
+            this._inputSection.style.display = value ? "grid" : "none";
+        }
+
+        set maxRows(value) {
+            this._props.maxRows = value;
+        }
+    }
+
+    customElements.define("com-sap-sample-tablewidget", TableWidget);
+})();
