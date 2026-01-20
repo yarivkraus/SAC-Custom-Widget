@@ -1,6 +1,6 @@
 (function () {
   try {
-    console.log("SAC Widget - Main Script Execution Started (v1.0.7)");
+    console.log("SAC Widget - Main Script Execution Started (v1.0.8)");
     let template = document.createElement("template");
     template.innerHTML = `
     <style>
@@ -191,21 +191,21 @@
     
     <div class="widget-container">
       <div class="widget-header">
-        <div class="widget-title" id="widgetTitle">Data Table (v1.0.7)</div>
+        <div class="widget-title" id="widgetTitle">Data Table (v1.0.8)</div>
       </div>
       
       <div class="input-section" id="inputSection">
         <div class="input-group">
           <label class="input-label" for="inputName">Name</label>
-          <input type="text" class="input-field" id="inputName" placeholder="Enter name">
+          <input type="text" class="input-field" id="inputName" placeholder="Enter name" aria-label="Name">
         </div>
         <div class="input-group">
           <label class="input-label" for="inputValue">Value</label>
-          <input type="number" class="input-field" id="inputValue" placeholder="Enter value">
+          <input type="number" class="input-field" id="inputValue" placeholder="Enter value" aria-label="Value">
         </div>
         <div class="input-group">
           <label class="input-label" for="inputCategory">Category</label>
-          <select class="input-field" id="inputCategory">
+          <select class="input-field" id="inputCategory" aria-label="Category">
             <option value="">Select category</option>
             <option value="Sales">Sales</option>
             <option value="Marketing">Marketing</option>
@@ -215,7 +215,7 @@
         </div>
         <div class="input-group">
           <label class="input-label" for="inputDate">Date</label>
-          <input type="date" class="input-field" id="inputDate">
+          <input type="date" class="input-field" id="inputDate" aria-label="Date">
         </div>
       </div>
       
