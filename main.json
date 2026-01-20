@@ -12,14 +12,14 @@
         {
             "kind": "main",
             "tag": "com-sap-sample-tablewidget",
-            "url": "https://localhost:8080/main.js",
+            "url": "https://github.com/yarivkraus/SAC-Custom-Widget/edit/main/main.js",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
             "tag": "com-sap-sample-tablewidget-styling",
-            "url": "https://localhost:8080/styling.js",
+            "url": "https://github.com/yarivkraus/SAC-Custom-Widget/edit/main/styling.js",
             "integrity": "",
             "ignoreIntegrity": true
         }
@@ -77,4 +77,5 @@
             ]
         }
     }
+
 }
