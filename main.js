@@ -1,6 +1,6 @@
 (function () {
-    let template = document.createElement("template");
-    template.innerHTML = `
+  let template = document.createElement("template");
+  template.innerHTML = `
     <style>
       :host {
         display: block;
@@ -245,142 +245,200 @@
     </div>
   `;
 
-    class TableWidget extends HTMLElement {
-        constructor() {
-            super();
-            this.attachShadow({ mode: "open" });
-            this.shadowRoot.appendChild(template.content.cloneNode(true));
+  class TableWidget extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-            this._props = {
-                title: "Data Table",
-                showInputFields: true,
-                maxRows: 10
-            };
+      this._props = {
+        title: "Data Table",
+        showInputFields: true,
+        maxRows: 10
+      };
 
-            this._data = [];
-            this._nextId = 1;
-            this._selectedRow = null;
+      this._data = [];
+      this._sapData = [];
+      this._nextId = 1;
+      this._selectedRow = null;
 
-            this._initializeElements();
-            this._attachEventListeners();
-        }
+      this._initializeElements();
+      this._attachEventListeners();
+    }
 
-        _initializeElements() {
-            this._titleElement = this.shadowRoot.getElementById("widgetTitle");
-            this._inputSection = this.shadowRoot.getElementById("inputSection");
-            this._inputName = this.shadowRoot.getElementById("inputName");
-            this._inputValue = this.shadowRoot.getElementById("inputValue");
-            this._inputCategory = this.shadowRoot.getElementById("inputCategory");
-            this._inputDate = this.shadowRoot.getElementById("inputDate");
-            this._addBtn = this.shadowRoot.getElementById("addBtn");
-            this._clearBtn = this.shadowRoot.getElementById("clearBtn");
-            this._exportBtn = this.shadowRoot.getElementById("exportBtn");
-            this._tableBody = this.shadowRoot.getElementById("tableBody");
-        }
+    onCustomWidgetAfterUpdate(changedProperties) {
+      if ("tableData" in changedProperties) {
+        this._processSapData(changedProperties["tableData"]);
+      }
+    }
 
-        _attachEventListeners() {
-            this._addBtn.addEventListener("click", () => this._addRow());
-            this._clearBtn.addEventListener("click", () => this._clearTable());
-            this._exportBtn.addEventListener("click", () => this._exportData());
+    _processSapData(tableData) {
+      if (!tableData || !tableData.data) {
+        this._sapData = [];
+        this._renderTable();
+        return;
+      }
 
-            // Allow Enter key to add row
-            [this._inputName, this._inputValue, this._inputCategory, this._inputDate].forEach(input => {
-                input.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") {
-                        this._addRow();
-                    }
-                });
-            });
-        }
+      const data = tableData.data;
+      const metadata = tableData.metadata;
 
-        _addRow() {
-            const name = this._inputName.value.trim();
-            const value = parseFloat(this._inputValue.value) || 0;
-            const category = this._inputCategory.value;
-            const date = this._inputDate.value;
+      // Map SAP data to our internal format
+      this._sapData = data.map((record, index) => {
+        const row = {
+          id: `SAP-${index + 1}`,
+          name: "Unknown",
+          value: 0,
+          category: "N/A",
+          date: new Date().toISOString().split('T')[0],
+          isSapData: true
+        };
 
-            if (!name) {
-                alert("Please enter a name");
-                return;
+        // Extract dimensions and measures based on metadata
+        // This is a simplified mapping logic
+        if (metadata && metadata.feeds) {
+          const dimFeed = metadata.feeds.dimensions;
+          const measFeed = metadata.feeds.measures;
+
+          if (dimFeed && dimFeed.values && dimFeed.values.length > 0) {
+            const dimId = dimFeed.values[0];
+            row.name = record[dimId]?.description || record[dimId]?.id || "Unknown";
+
+            if (dimFeed.values.length > 1) {
+              const catId = dimFeed.values[1];
+              row.category = record[catId]?.description || record[catId]?.id || "N/A";
             }
+          }
 
-            const newRow = {
-                id: this._nextId++,
-                name: name,
-                value: value,
-                category: category || "N/A",
-                date: date || new Date().toISOString().split('T')[0]
-            };
-
-            this._data.push(newRow);
-            this._renderTable();
-            this._clearInputs();
-            this._fireEvent("onDataChange");
+          if (measFeed && measFeed.values && measFeed.values.length > 0) {
+            const measId = measFeed.values[0];
+            row.value = record[measId]?.rawValue || 0;
+          }
         }
 
-        _editRow(id) {
-            const row = this._data.find(r => r.id === id);
-            if (row) {
-                this._inputName.value = row.name;
-                this._inputValue.value = row.value;
-                this._inputCategory.value = row.category === "N/A" ? "" : row.category;
-                this._inputDate.value = row.date;
+        return row;
+      });
 
-                // Remove the row so it can be re-added with updated values
-                this._deleteRow(id);
-            }
-        }
+      this._renderTable();
+    }
 
-        _deleteRow(id) {
-            this._data = this._data.filter(r => r.id !== id);
-            this._renderTable();
-            this._fireEvent("onDataChange");
-        }
+    _initializeElements() {
+      this._titleElement = this.shadowRoot.getElementById("widgetTitle");
+      this._inputSection = this.shadowRoot.getElementById("inputSection");
+      this._inputName = this.shadowRoot.getElementById("inputName");
+      this._inputValue = this.shadowRoot.getElementById("inputValue");
+      this._inputCategory = this.shadowRoot.getElementById("inputCategory");
+      this._inputDate = this.shadowRoot.getElementById("inputDate");
+      this._addBtn = this.shadowRoot.getElementById("addBtn");
+      this._clearBtn = this.shadowRoot.getElementById("clearBtn");
+      this._exportBtn = this.shadowRoot.getElementById("exportBtn");
+      this._tableBody = this.shadowRoot.getElementById("tableBody");
+    }
 
-        _clearTable() {
-            if (this._data.length > 0 && !confirm("Are you sure you want to clear all data?")) {
-                return;
-            }
-            this._data = [];
-            this._nextId = 1;
-            this._renderTable();
-            this._fireEvent("onDataChange");
-        }
+    _attachEventListeners() {
+      this._addBtn.addEventListener("click", () => this._addRow());
+      this._clearBtn.addEventListener("click", () => this._clearTable());
+      this._exportBtn.addEventListener("click", () => this._exportData());
 
-        _clearInputs() {
-            this._inputName.value = "";
-            this._inputValue.value = "";
-            this._inputCategory.value = "";
-            this._inputDate.value = "";
-            this._inputName.focus();
-        }
+      // Allow Enter key to add row
+      [this._inputName, this._inputValue, this._inputCategory, this._inputDate].forEach(input => {
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            this._addRow();
+          }
+        });
+      });
+    }
 
-        _exportData() {
-            const dataStr = JSON.stringify(this._data, null, 2);
-            const dataBlob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = "table-data.json";
-            link.click();
-            URL.revokeObjectURL(url);
-        }
+    _addRow() {
+      const name = this._inputName.value.trim();
+      const value = parseFloat(this._inputValue.value) || 0;
+      const category = this._inputCategory.value;
+      const date = this._inputDate.value;
 
-        _renderTable() {
-            this._tableBody.innerHTML = "";
+      if (!name) {
+        alert("Please enter a name");
+        return;
+      }
 
-            if (this._data.length === 0) {
-                const row = document.createElement("tr");
-                row.innerHTML = '<td colspan="6" class="no-data">No data available. Add rows using the input fields above.</td>';
-                this._tableBody.appendChild(row);
-                return;
-            }
+      const newRow = {
+        id: this._nextId++,
+        name: name,
+        value: value,
+        category: category || "N/A",
+        date: date || new Date().toISOString().split('T')[0]
+      };
 
-            this._data.forEach(item => {
-                const row = document.createElement("tr");
-                row.dataset.id = item.id;
+      this._data.push(newRow);
+      this._renderTable();
+      this._clearInputs();
+      this._fireEvent("onDataChange");
+    }
 
-                row.innerHTML = `
+    _editRow(id) {
+      const row = this._data.find(r => r.id === id);
+      if (row) {
+        this._inputName.value = row.name;
+        this._inputValue.value = row.value;
+        this._inputCategory.value = row.category === "N/A" ? "" : row.category;
+        this._inputDate.value = row.date;
+
+        // Remove the row so it can be re-added with updated values
+        this._deleteRow(id);
+      }
+    }
+
+    _deleteRow(id) {
+      this._data = this._data.filter(r => r.id !== id);
+      this._renderTable();
+      this._fireEvent("onDataChange");
+    }
+
+    _clearTable() {
+      if (this._data.length > 0 && !confirm("Are you sure you want to clear all data?")) {
+        return;
+      }
+      this._data = [];
+      this._nextId = 1;
+      this._renderTable();
+      this._fireEvent("onDataChange");
+    }
+
+    _clearInputs() {
+      this._inputName.value = "";
+      this._inputValue.value = "";
+      this._inputCategory.value = "";
+      this._inputDate.value = "";
+      this._inputName.focus();
+    }
+
+    _exportData() {
+      const dataStr = JSON.stringify(this._data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "table-data.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    _renderTable() {
+      this._tableBody.innerHTML = "";
+      const allData = [...this._sapData, ...this._data];
+
+      if (allData.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = '<td colspan="6" class="no-data">No data available. Add rows using the input fields above or bind a data source.</td>';
+        this._tableBody.appendChild(row);
+        return;
+      }
+
+      allData.forEach(item => {
+        const row = document.createElement("tr");
+        row.dataset.id = item.id;
+        if (item.isSapData) row.style.borderLeft = "4px solid #0854a0";
+
+        row.innerHTML = `
           <td>${item.id}</td>
           <td>${item.name}</td>
           <td>${item.value.toLocaleString()}</td>
@@ -388,85 +446,87 @@
           <td>${item.date}</td>
           <td>
             <div class="actions-cell">
+              ${item.isSapData ? '<span style="font-size:10px; color:#666;">DS Data</span>' : `
               <button class="action-btn edit-btn" data-id="${item.id}">Edit</button>
               <button class="action-btn delete-btn" data-id="${item.id}">Delete</button>
+              `}
             </div>
           </td>
         `;
 
-                row.addEventListener("click", (e) => {
-                    if (!e.target.classList.contains("action-btn")) {
-                        this._selectRow(row);
-                    }
-                });
+        row.addEventListener("click", (e) => {
+          if (!e.target.classList.contains("action-btn")) {
+            this._selectRow(row);
+          }
+        });
 
-                const editBtn = row.querySelector(".edit-btn");
-                const deleteBtn = row.querySelector(".delete-btn");
+        const editBtn = row.querySelector(".edit-btn");
+        const deleteBtn = row.querySelector(".delete-btn");
 
-                editBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    this._editRow(item.id);
-                });
+        editBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this._editRow(item.id);
+        });
 
-                deleteBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    this._deleteRow(item.id);
-                });
+        deleteBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this._deleteRow(item.id);
+        });
 
-                this._tableBody.appendChild(row);
-            });
-        }
-
-        _selectRow(row) {
-            // Remove previous selection
-            const previousSelected = this._tableBody.querySelector(".selected");
-            if (previousSelected) {
-                previousSelected.classList.remove("selected");
-            }
-
-            // Add new selection
-            row.classList.add("selected");
-            this._selectedRow = parseInt(row.dataset.id);
-            this._fireEvent("onRowSelect");
-        }
-
-        _fireEvent(eventName) {
-            this.dispatchEvent(new CustomEvent(eventName, {
-                detail: {
-                    data: this._data,
-                    selectedRow: this._selectedRow
-                }
-            }));
-        }
-
-        // Public methods
-        addRow() {
-            this._addRow();
-        }
-
-        clearTable() {
-            this._clearTable();
-        }
-
-        getData() {
-            return JSON.parse(JSON.stringify(this._data));
-        }
-
-        // Property setters
-        set title(value) {
-            this._props.title = value;
-            this._titleElement.textContent = value;
-        }
-
-        set showInputFields(value) {
-            this._props.showInputFields = value;
-            this._inputSection.style.display = value ? "grid" : "none";
-        }
-
-        set maxRows(value) {
-            this._props.maxRows = value;
-        }
+        this._tableBody.appendChild(row);
+      });
     }
 
-    customElements.define("com-sap-sample-tablewidget", TableWidget);
+    _selectRow(row) {
+      // Remove previous selection
+      const previousSelected = this._tableBody.querySelector(".selected");
+      if (previousSelected) {
+        previousSelected.classList.remove("selected");
+      }
+
+      // Add new selection
+      row.classList.add("selected");
+      this._selectedRow = parseInt(row.dataset.id);
+      this._fireEvent("onRowSelect");
+    }
+
+    _fireEvent(eventName) {
+      this.dispatchEvent(new CustomEvent(eventName, {
+        detail: {
+          data: this._data,
+          selectedRow: this._selectedRow
+        }
+      }));
+    }
+
+    // Public methods
+    addRow() {
+      this._addRow();
+    }
+
+    clearTable() {
+      this._clearTable();
+    }
+
+    getData() {
+      return JSON.parse(JSON.stringify(this._data));
+    }
+
+    // Property setters
+    set title(value) {
+      this._props.title = value;
+      this._titleElement.textContent = value;
+    }
+
+    set showInputFields(value) {
+      this._props.showInputFields = value;
+      this._inputSection.style.display = value ? "grid" : "none";
+    }
+
+    set maxRows(value) {
+      this._props.maxRows = value;
+    }
+  }
+
+  customElements.define("com-sap-sample-tablewidget", TableWidget);
 })();

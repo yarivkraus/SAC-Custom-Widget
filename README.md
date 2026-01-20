@@ -83,6 +83,17 @@ See **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** for:
 - SAP Fiori styling
 - Fully responsive
 
+### 🔗 Data Source Connection
+
+You can now bind your SAC data models to this widget:
+
+1.  In SAC, select the widget and open the **Builder** panel.
+2.  Go to the **Data Binding** section and add a data source.
+3.  Map your dimensions and measures:
+    *   **Dimensions**: The first dimension maps to the **Name** column, the second to **Category**.
+    *   **Measures**: The first measure maps to the **Value** column.
+4.  Data from your data source is visually indicated with a blue left border.
+
 ---
 
 **Remember:** Test locally first, then deploy to a public URL for SAC!
