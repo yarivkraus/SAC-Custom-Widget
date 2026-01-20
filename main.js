@@ -1,6 +1,6 @@
 (function () {
   try {
-    console.log("SAC Widget - Main Script Execution Started (v1.0.8)");
+    console.log("SAC Widget - Main Script Execution Started (v1.0.9)");
     let template = document.createElement("template");
     template.innerHTML = `
     <style>
@@ -191,7 +191,7 @@
     
     <div class="widget-container">
       <div class="widget-header">
-        <div class="widget-title" id="widgetTitle">Data Table (v1.0.8)</div>
+        <div class="widget-title" id="widgetTitle">Data Table (v1.0.9)</div>
       </div>
       
       <div class="input-section" id="inputSection">
