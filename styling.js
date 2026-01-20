@@ -1,6 +1,6 @@
 (function () {
   try {
-    console.log("SAC Widget Styling - Script Execution Started (v1.0.7)");
+    console.log("SAC Widget Styling - Script Execution Started (v1.0.8)");
     let template = document.createElement("template");
     template.innerHTML = `
     <style>
@@ -52,28 +52,28 @@
     </style>
     
     <div class="styling-panel">
-      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.7</div>
+      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.8</div>
       <div class="styling-section">
         <label class="styling-label" for="titleInput">Widget Title</label>
-        <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title">
+        <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title" aria-label="Widget Title">
       </div>
       
       <div class="styling-section">
         <label class="styling-label" for="showInputCheckbox">Show Input Fields</label>
         <div class="checkbox-container">
-          <input type="checkbox" class="checkbox" id="showInputCheckbox" checked>
+          <input type="checkbox" class="checkbox" id="showInputCheckbox" checked aria-label="Show Input Fields">
           <label for="showInputCheckbox">Display input section</label>
         </div>
       </div>
       
       <div class="styling-section">
         <label class="styling-label" for="maxRowsInput">Maximum Rows</label>
-        <input type="number" class="styling-input" id="maxRowsInput" min="1" max="100" value="10">
+        <input type="number" class="styling-input" id="maxRowsInput" min="1" max="100" value="10" aria-label="Maximum Rows">
       </div>
       
       <div class="styling-section">
         <label class="styling-label" for="primaryColorPicker">Primary Color</label>
-        <input type="color" class="color-picker" id="primaryColorPicker" value="#0854a0">
+        <input type="color" class="color-picker" id="primaryColorPicker" value="#0854a0" aria-label="Primary Color">
       </div>
     </div>
   `;
