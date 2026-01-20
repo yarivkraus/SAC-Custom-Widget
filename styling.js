@@ -1,6 +1,6 @@
 (function () {
-    let template = document.createElement("template");
-    template.innerHTML = `
+  let template = document.createElement("template");
+  template.innerHTML = `
     <style>
       /* Styling panel for SAC custom widget */
       .styling-panel {
@@ -75,51 +75,53 @@
     </div>
   `;
 
-    class TableWidgetStyling extends HTMLElement {
-        constructor() {
-            super();
-            this.attachShadow({ mode: "open" });
-            this.shadowRoot.appendChild(template.content.cloneNode(true));
+  class TableWidgetStyling extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-            this._initializeElements();
-            this._attachEventListeners();
-        }
-
-        _initializeElements() {
-            this._titleInput = this.shadowRoot.getElementById("titleInput");
-            this._showInputCheckbox = this.shadowRoot.getElementById("showInputCheckbox");
-            this._maxRowsInput = this.shadowRoot.getElementById("maxRowsInput");
-            this._primaryColorPicker = this.shadowRoot.getElementById("primaryColorPicker");
-        }
-
-        _attachEventListeners() {
-            this._titleInput.addEventListener("input", () => {
-                this._firePropertyChange("title", this._titleInput.value);
-            });
-
-            this._showInputCheckbox.addEventListener("change", () => {
-                this._firePropertyChange("showInputFields", this._showInputCheckbox.checked);
-            });
-
-            this._maxRowsInput.addEventListener("input", () => {
-                this._firePropertyChange("maxRows", parseInt(this._maxRowsInput.value));
-            });
-
-            this._primaryColorPicker.addEventListener("input", () => {
-                this._firePropertyChange("primaryColor", this._primaryColorPicker.value);
-            });
-        }
-
-        _firePropertyChange(propertyName, value) {
-            this.dispatchEvent(new CustomEvent("propertiesChanged", {
-                detail: {
-                    properties: {
-                        [propertyName]: value
-                    }
-                }
-            }));
-        }
+      this._initializeElements();
+      this._attachEventListeners();
     }
 
+    _initializeElements() {
+      this._titleInput = this.shadowRoot.getElementById("titleInput");
+      this._showInputCheckbox = this.shadowRoot.getElementById("showInputCheckbox");
+      this._maxRowsInput = this.shadowRoot.getElementById("maxRowsInput");
+      this._primaryColorPicker = this.shadowRoot.getElementById("primaryColorPicker");
+    }
+
+    _attachEventListeners() {
+      this._titleInput.addEventListener("input", () => {
+        this._firePropertyChange("title", this._titleInput.value);
+      });
+
+      this._showInputCheckbox.addEventListener("change", () => {
+        this._firePropertyChange("showInputFields", this._showInputCheckbox.checked);
+      });
+
+      this._maxRowsInput.addEventListener("input", () => {
+        this._firePropertyChange("maxRows", parseInt(this._maxRowsInput.value));
+      });
+
+      this._primaryColorPicker.addEventListener("input", () => {
+        this._firePropertyChange("primaryColor", this._primaryColorPicker.value);
+      });
+    }
+
+    _firePropertyChange(propertyName, value) {
+      this.dispatchEvent(new CustomEvent("propertiesChanged", {
+        detail: {
+          properties: {
+            [propertyName]: value
+          }
+        }
+      }));
+    }
+  }
+
+  if (!customElements.get("com-sap-sample-tablewidget-styling")) {
     customElements.define("com-sap-sample-tablewidget-styling", TableWidgetStyling);
+  }
 })();

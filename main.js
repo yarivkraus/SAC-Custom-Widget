@@ -460,43 +460,51 @@
           const displayValue = typeof item.value === 'number' ? item.value.toLocaleString() : String(item.value || 0);
 
           row.innerHTML = `
-            <td>${item.id}</td>
-            <td>${item.name || ''}</td>
-            <td>${displayValue}</td>
-            <td>${item.category || ''}</td>
-            <td>${item.date || ''}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td>
               <div class="actions-cell">
-                ${item.isSapData ? '<span style="font-size:10px; color:#666;">DS Data</span>' : `
-                <button class="action-btn edit-btn" data-id="${item.id}">Edit</button>
-                <button class="action-btn delete-btn" data-id="${item.id}">Delete</button>
-                `}
               </div>
             </td>
           `;
 
-          row.addEventListener("click", (e) => {
+          const cells = row.querySelectorAll("td");
+          cells[0].textContent = item.id;
+          cells[1].textContent = item.name || '';
+          cells[2].textContent = displayValue;
+          cells[3].textContent = item.category || '';
+          cells[4].textContent = item.date || '';
+
+          const actionsCell = row.querySelector(".actions-cell");
+          if (item.isSapData) {
+            const span = document.createElement("span");
+            span.style.fontSize = "10px";
+            span.style.color = "#666";
+            span.textContent = "DS Data";
+            actionsCell.appendChild(span);
+          } else {
+            const editBtn = document.createElement("button");
+            editBtn.className = "action-btn edit-btn";
+            editBtn.textContent = "Edit";
+            editBtn.onclick = (e) => { e.stopPropagation(); this._editRow(item.id); };
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "action-btn delete-btn";
+            deleteBtn.textContent = "Delete";
+            deleteBtn.onclick = (e) => { e.stopPropagation(); this._deleteRow(item.id); };
+
+            actionsCell.appendChild(editBtn);
+            actionsCell.appendChild(deleteBtn);
+          }
+
+          row.onclick = (e) => {
             if (!e.target.classList.contains("action-btn")) {
               this._selectRow(row);
             }
-          });
-
-          const editBtn = row.querySelector(".edit-btn");
-          const deleteBtn = row.querySelector(".delete-btn");
-
-          if (editBtn) {
-            editBtn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              this._editRow(item.id);
-            });
-          }
-
-          if (deleteBtn) {
-            deleteBtn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              this._deleteRow(item.id);
-            });
-          }
+          };
 
           this._tableBody.appendChild(row);
         });
@@ -554,7 +562,18 @@
     set maxRows(value) {
       this._props.maxRows = value;
     }
+
+    set primaryColor(value) {
+      this._props.primaryColor = value;
+      this.shadowRoot.querySelectorAll('.widget-title, th').forEach(el => {
+        el.style.color = value;
+        if (el.tagName === 'TH') el.style.borderBottomColor = value;
+      });
+      this.shadowRoot.querySelector('.widget-header').style.borderBottomColor = value;
+    }
   }
 
-  customElements.define("com-sap-sample-tablewidget", TableWidget);
+  if (!customElements.get("com-sap-sample-tablewidget")) {
+    customElements.define("com-sap-sample-tablewidget", TableWidget);
+  }
 })();

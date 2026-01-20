@@ -1,6 +1,6 @@
 {
     "id": "com.sap.sample.tablewidget",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Table Widget with Input Fields",
     "description": "Custom SAC widget with table display and input fields",
     "newInstancePrefix": "TableWidget",
@@ -39,6 +39,11 @@
             "type": "integer",
             "description": "Maximum Rows to Display",
             "default": 10
+        },
+        "primaryColor": {
+            "type": "string",
+            "description": "Primary Theme Color",
+            "default": "#0854a0"
         }
     },
     "methods": {
