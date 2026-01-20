@@ -194,15 +194,15 @@
       
       <div class="input-section" id="inputSection">
         <div class="input-group">
-          <label class="input-label">Name</label>
+          <label class="input-label" for="inputName">Name</label>
           <input type="text" class="input-field" id="inputName" placeholder="Enter name">
         </div>
         <div class="input-group">
-          <label class="input-label">Value</label>
+          <label class="input-label" for="inputValue">Value</label>
           <input type="number" class="input-field" id="inputValue" placeholder="Enter value">
         </div>
         <div class="input-group">
-          <label class="input-label">Category</label>
+          <label class="input-label" for="inputCategory">Category</label>
           <select class="input-field" id="inputCategory">
             <option value="">Select category</option>
             <option value="Sales">Sales</option>
@@ -212,7 +212,7 @@
           </select>
         </div>
         <div class="input-group">
-          <label class="input-label">Date</label>
+          <label class="input-label" for="inputDate">Date</label>
           <input type="date" class="input-field" id="inputDate">
         </div>
       </div>
@@ -268,17 +268,27 @@
 
     onCustomWidgetAfterUpdate(changedProperties) {
       try {
+        console.log("SAC Widget - onCustomWidgetAfterUpdate called with:", changedProperties);
         if ("tableData" in changedProperties) {
           this._processSapData(changedProperties["tableData"]);
         }
+
+        // Handle property updates defensively
+        if (changedProperties.title !== undefined) this.title = changedProperties.title;
+        if (changedProperties.showInputFields !== undefined) this.showInputFields = changedProperties.showInputFields;
+        if (changedProperties.maxRows !== undefined) this.maxRows = changedProperties.maxRows;
+        if (changedProperties.primaryColor !== undefined) this.primaryColor = changedProperties.primaryColor;
+
       } catch (e) {
-        console.error("Error in onCustomWidgetAfterUpdate:", e);
+        console.error("SAC Widget - Error in onCustomWidgetAfterUpdate:", e);
       }
     }
 
     _processSapData(tableData) {
       try {
+        console.log("SAC Widget - _processSapData received tableData:", tableData);
         if (!tableData || !tableData.data) {
+          console.log("SAC Widget - No data or invalid tableData structure received.");
           this._sapData = [];
           this._renderTable();
           return;
@@ -550,30 +560,37 @@
 
     // Property setters
     set title(value) {
-      this._props.title = value;
-      this._titleElement.textContent = value;
+      this._props.title = value || "Data Table";
+      if (this._titleElement) {
+        this._titleElement.textContent = this._props.title;
+      }
     }
 
     set showInputFields(value) {
-      this._props.showInputFields = value;
-      this._inputSection.style.display = value ? "grid" : "none";
+      this._props.showInputFields = !!value;
+      if (this._inputSection) {
+        this._inputSection.style.display = this._props.showInputFields ? "grid" : "none";
+      }
     }
 
     set maxRows(value) {
-      this._props.maxRows = value;
+      this._props.maxRows = parseInt(value) || 10;
     }
 
     set primaryColor(value) {
-      this._props.primaryColor = value;
-      this.shadowRoot.querySelectorAll('.widget-title, th').forEach(el => {
-        el.style.color = value;
-        if (el.tagName === 'TH') el.style.borderBottomColor = value;
-      });
-      this.shadowRoot.querySelector('.widget-header').style.borderBottomColor = value;
+      this._props.primaryColor = value || "#0854a0";
+      if (this.shadowRoot) {
+        this.shadowRoot.querySelectorAll('.widget-title, th').forEach(el => {
+          el.style.color = this._props.primaryColor;
+          if (el.tagName === 'TH') el.style.borderBottomColor = this._props.primaryColor;
+        });
+        const header = this.shadowRoot.querySelector('.widget-header');
+        if (header) header.style.borderBottomColor = this._props.primaryColor;
+      }
     }
   }
 
-  if (!customElements.get("com-sap-sample-tablewidget")) {
-    customElements.define("com-sap-sample-tablewidget", TableWidget);
+  if (!customElements.get("com-yarivkraus-tablewidget")) {
+    customElements.define("com-yarivkraus-tablewidget", TableWidget);
   }
 })();

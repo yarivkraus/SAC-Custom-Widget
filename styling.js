@@ -51,25 +51,25 @@
     
     <div class="styling-panel">
       <div class="styling-section">
-        <label class="styling-label">Widget Title</label>
+        <label class="styling-label" for="titleInput">Widget Title</label>
         <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title">
       </div>
       
       <div class="styling-section">
-        <label class="styling-label">Show Input Fields</label>
+        <label class="styling-label" for="showInputCheckbox">Show Input Fields</label>
         <div class="checkbox-container">
           <input type="checkbox" class="checkbox" id="showInputCheckbox" checked>
-          <span>Display input section</span>
+          <label for="showInputCheckbox">Display input section</label>
         </div>
       </div>
       
       <div class="styling-section">
-        <label class="styling-label">Maximum Rows</label>
+        <label class="styling-label" for="maxRowsInput">Maximum Rows</label>
         <input type="number" class="styling-input" id="maxRowsInput" min="1" max="100" value="10">
       </div>
       
       <div class="styling-section">
-        <label class="styling-label">Primary Color</label>
+        <label class="styling-label" for="primaryColorPicker">Primary Color</label>
         <input type="color" class="color-picker" id="primaryColorPicker" value="#0854a0">
       </div>
     </div>
@@ -121,7 +121,7 @@
     }
   }
 
-  if (!customElements.get("com-sap-sample-tablewidget-styling")) {
-    customElements.define("com-sap-sample-tablewidget-styling", TableWidgetStyling);
+  if (!customElements.get("com-yarivkraus-tablewidget-styling")) {
+    customElements.define("com-yarivkraus-tablewidget-styling", TableWidgetStyling);
   }
 })();
