@@ -1,142 +1,58 @@
 (function () {
   try {
-    console.log("SAC Widget Styling - Script Execution Started (v1.0.9)");
+    console.log("SAC Simple Widget Styling - Execution Started (v2.0.0)");
     let template = document.createElement("template");
     template.innerHTML = `
     <style>
-      /* Styling panel for SAC custom widget */
-      .styling-panel {
-        font-family: "72", "72full", Arial, Helvetica, sans-serif;
-        padding: 16px;
-      }
-      
-      .styling-section {
-        margin-bottom: 20px;
-      }
-      
-      .styling-label {
-        display: block;
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #32363a;
-      }
-      
-      .styling-input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #89919a;
-        border-radius: 4px;
-        font-size: 14px;
-      }
-      
-      .color-picker {
-        width: 100%;
-        height: 40px;
-        border: 1px solid #89919a;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      
-      .checkbox-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      
-      .checkbox {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-      }
+      .panel { font-family: Arial, sans-serif; padding: 15px; }
+      .section { margin-bottom: 15px; }
+      label { display: block; font-weight: bold; margin-bottom: 5px; }
+      input { width: 100%; padding: 5px; box-sizing: border-box; }
     </style>
-    
-    <div class="styling-panel">
-      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.9</div>
-      <div class="styling-section">
-        <label class="styling-label" for="titleInput">Widget Title</label>
-        <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title" aria-label="Widget Title">
+    <div class="panel">
+      <div style="font-size: 10px; color: #999;">Simple Styling v2.0.0</div>
+      <div class="section">
+        <label>Widget Title</label>
+        <input type="text" id="titleInput">
       </div>
-      
-      <div class="styling-section">
-        <label class="styling-label" for="showInputCheckbox">Show Input Fields</label>
-        <div class="checkbox-container">
-          <input type="checkbox" class="checkbox" id="showInputCheckbox" checked aria-label="Show Input Fields">
-          <label for="showInputCheckbox">Display input section</label>
-        </div>
-      </div>
-      
-      <div class="styling-section">
-        <label class="styling-label" for="maxRowsInput">Maximum Rows</label>
-        <input type="number" class="styling-input" id="maxRowsInput" min="1" max="100" value="10" aria-label="Maximum Rows">
-      </div>
-      
-      <div class="styling-section">
-        <label class="styling-label" for="primaryColorPicker">Primary Color</label>
-        <input type="color" class="color-picker" id="primaryColorPicker" value="#0854a0" aria-label="Primary Color">
+      <div class="section">
+        <label>Primary Color</label>
+        <input type="color" id="colorInput">
       </div>
     </div>
   `;
 
-    class TableWidgetStyling extends HTMLElement {
+    class SimpleTableStyling extends HTMLElement {
       constructor() {
         super();
         this.attachShadow({ mode: "open" });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-
         this._initializeElements();
-        this._attachEventListeners();
       }
 
       _initializeElements() {
-        this._titleInput = this.shadowRoot.getElementById("titleInput");
-        this._showInputCheckbox = this.shadowRoot.getElementById("showInputCheckbox");
-        this._maxRowsInput = this.shadowRoot.getElementById("maxRowsInput");
-        this._primaryColorPicker = this.shadowRoot.getElementById("primaryColorPicker");
+        this._title = this.shadowRoot.getElementById("titleInput");
+        this._color = this.shadowRoot.getElementById("colorInput");
+
+        this._title.addEventListener("input", () => this._fireChange("title", this._title.value));
+        this._color.addEventListener("input", () => this._fireChange("primaryColor", this._color.value));
       }
 
-      _attachEventListeners() {
-        this._titleInput.addEventListener("input", () => {
-          this._firePropertyChange("title", this._titleInput.value);
-        });
-
-        this._showInputCheckbox.addEventListener("change", () => {
-          this._firePropertyChange("showInputFields", this._showInputCheckbox.checked);
-        });
-
-        this._maxRowsInput.addEventListener("input", () => {
-          this._firePropertyChange("maxRows", parseInt(this._maxRowsInput.value));
-        });
-
-        this._primaryColorPicker.addEventListener("input", () => {
-          this._firePropertyChange("primaryColor", this._primaryColorPicker.value);
-        });
-      }
-
-      _firePropertyChange(propertyName, value) {
+      _fireChange(prop, val) {
         this.dispatchEvent(new CustomEvent("propertiesChanged", {
-          detail: {
-            properties: {
-              [propertyName]: value
-            }
-          }
+          detail: { properties: { [prop]: val } }
         }));
       }
     }
-    console.log("SAC Widget Styling - Script loaded");
-    try {
-      // Dual-Tag strategy for styling panel
-      if (!customElements.get("com-yarivkraus-tablewidget-styling")) {
-        customElements.define("com-yarivkraus-tablewidget-styling", TableWidgetStyling);
-      }
-      if (!customElements.get("com-sap-sample-tablewidget-styling")) {
-        customElements.define("com-sap-sample-tablewidget-styling", TableWidgetStyling);
-      }
-      console.log("SAC Widget Styling - Custom Element defined (Dual-Tag)");
-    } catch (e) {
-      console.warn("SAC Widget Styling - Custom Element might already be defined:", e);
+
+    if (!customElements.get("com-yarivkraus-simpletable-styling")) {
+      customElements.define("com-yarivkraus-simpletable-styling", SimpleTableStyling);
     }
+    if (!customElements.get("com-yarivkraus-tablewidget-styling")) {
+      customElements.define("com-yarivkraus-tablewidget-styling", SimpleTableStyling);
+    }
+    console.log("SAC Simple Widget Styling - Defined successfully");
   } catch (e) {
-    console.error("SAC Widget Styling - TOP LEVEL CRASH in styling.js:", e);
+    console.error("SAC Simple Widget Styling - Fatal Error:", e);
   }
 })();
