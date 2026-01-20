@@ -4,7 +4,6 @@
     "name": "Yariv's Table Widget",
     "description": "Custom SAC widget from yarivkraus",
     "newInstancePrefix": "TableWidget",
-    "icon": "https://github.com/yarivkraus/SAC-Custom-Widget/blob/main/K%26D%20LOGO.jpg",
     "vendor": "Kraus and Dauthers",
     "eula": "",
     "license": "",
@@ -83,3 +82,4 @@
         }
     }
 }
+
