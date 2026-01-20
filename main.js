@@ -267,58 +267,76 @@
     }
 
     onCustomWidgetAfterUpdate(changedProperties) {
-      if ("tableData" in changedProperties) {
-        this._processSapData(changedProperties["tableData"]);
+      try {
+        if ("tableData" in changedProperties) {
+          this._processSapData(changedProperties["tableData"]);
+        }
+      } catch (e) {
+        console.error("Error in onCustomWidgetAfterUpdate:", e);
       }
     }
 
     _processSapData(tableData) {
-      if (!tableData || !tableData.data) {
-        this._sapData = [];
-        this._renderTable();
-        return;
-      }
+      try {
+        if (!tableData || !tableData.data) {
+          this._sapData = [];
+          this._renderTable();
+          return;
+        }
 
-      const data = tableData.data;
-      const metadata = tableData.metadata;
+        const data = tableData.data;
+        const metadata = tableData.metadata;
 
-      // Map SAP data to our internal format
-      this._sapData = data.map((record, index) => {
-        const row = {
-          id: `SAP-${index + 1}`,
-          name: "Unknown",
-          value: 0,
-          category: "N/A",
-          date: new Date().toISOString().split('T')[0],
-          isSapData: true
-        };
+        // Map SAP data to our internal format
+        this._sapData = data.map((record, index) => {
+          const row = {
+            id: `SAP-${index + 1}`,
+            name: "Unknown",
+            value: 0,
+            category: "N/A",
+            date: new Date().toISOString().split('T')[0],
+            isSapData: true
+          };
 
-        // Extract dimensions and measures based on metadata
-        // This is a simplified mapping logic
-        if (metadata && metadata.feeds) {
-          const dimFeed = metadata.feeds.dimensions;
-          const measFeed = metadata.feeds.measures;
+          // Extract dimensions and measures based on metadata
+          if (metadata && metadata.feeds) {
+            const dimFeed = metadata.feeds.dimensions;
+            const measFeed = metadata.feeds.measures;
 
-          if (dimFeed && dimFeed.values && dimFeed.values.length > 0) {
-            const dimId = dimFeed.values[0];
-            row.name = record[dimId]?.description || record[dimId]?.id || "Unknown";
+            if (dimFeed && dimFeed.values && dimFeed.values.length > 0) {
+              const dimId = dimFeed.values[0];
+              const dimVal = record[dimId];
+              if (dimVal) {
+                row.name = dimVal.description || dimVal.id || String(dimVal);
+              }
 
-            if (dimFeed.values.length > 1) {
-              const catId = dimFeed.values[1];
-              row.category = record[catId]?.description || record[catId]?.id || "N/A";
+              if (dimFeed.values.length > 1) {
+                const catId = dimFeed.values[1];
+                const catVal = record[catId];
+                if (catVal) {
+                  row.category = catVal.description || catVal.id || String(catVal);
+                }
+              }
+            }
+
+            if (measFeed && measFeed.values && measFeed.values.length > 0) {
+              const measId = measFeed.values[0];
+              const measVal = record[measId];
+              if (measVal) {
+                row.value = typeof measVal.rawValue === 'number' ? measVal.rawValue : (parseFloat(measVal.rawValue) || 0);
+              }
             }
           }
 
-          if (measFeed && measFeed.values && measFeed.values.length > 0) {
-            const measId = measFeed.values[0];
-            row.value = record[measId]?.rawValue || 0;
-          }
-        }
+          return row;
+        });
 
-        return row;
-      });
-
-      this._renderTable();
+        this._renderTable();
+      } catch (e) {
+        console.error("Error processing SAC data:", e);
+        this._sapData = [];
+        this._renderTable();
+      }
     }
 
     _initializeElements() {
@@ -423,58 +441,64 @@
     }
 
     _renderTable() {
-      this._tableBody.innerHTML = "";
-      const allData = [...this._sapData, ...this._data];
+      try {
+        this._tableBody.innerHTML = "";
+        const allData = Array.isArray(this._sapData) && Array.isArray(this._data) ? [...this._sapData, ...this._data] : (Array.isArray(this._data) ? this._data : []);
 
-      if (allData.length === 0) {
-        const row = document.createElement("tr");
-        row.innerHTML = '<td colspan="6" class="no-data">No data available. Add rows using the input fields above or bind a data source.</td>';
-        this._tableBody.appendChild(row);
-        return;
+        if (allData.length === 0) {
+          const row = document.createElement("tr");
+          row.innerHTML = '<td colspan="6" class="no-data">No data available. Add rows using the input fields above or bind a data source.</td>';
+          this._tableBody.appendChild(row);
+          return;
+        }
+
+        allData.forEach(item => {
+          const row = document.createElement("tr");
+          row.dataset.id = item.id;
+          if (item.isSapData) row.style.borderLeft = "4px solid #0854a0";
+
+          const displayValue = typeof item.value === 'number' ? item.value.toLocaleString() : String(item.value || 0);
+
+          row.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.name || ''}</td>
+            <td>${displayValue}</td>
+            <td>${item.category || ''}</td>
+            <td>${item.date || ''}</td>
+            <td>
+              <div class="actions-cell">
+                ${item.isSapData ? '<span style="font-size:10px; color:#666;">DS Data</span>' : `
+                <button class="action-btn edit-btn" data-id="${item.id}">Edit</button>
+                <button class="action-btn delete-btn" data-id="${item.id}">Delete</button>
+                `}
+              </div>
+            </td>
+          `;
+
+          row.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("action-btn")) {
+              this._selectRow(row);
+            }
+          });
+
+          const editBtn = row.querySelector(".edit-btn");
+          const deleteBtn = row.querySelector(".delete-btn");
+
+          editBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this._editRow(item.id);
+          });
+
+          deleteBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            this._deleteRow(item.id);
+          });
+
+          this._tableBody.appendChild(row);
+        });
+      } catch (e) {
+        console.error("Error rendering table:", e);
       }
-
-      allData.forEach(item => {
-        const row = document.createElement("tr");
-        row.dataset.id = item.id;
-        if (item.isSapData) row.style.borderLeft = "4px solid #0854a0";
-
-        row.innerHTML = `
-          <td>${item.id}</td>
-          <td>${item.name}</td>
-          <td>${item.value.toLocaleString()}</td>
-          <td>${item.category}</td>
-          <td>${item.date}</td>
-          <td>
-            <div class="actions-cell">
-              ${item.isSapData ? '<span style="font-size:10px; color:#666;">DS Data</span>' : `
-              <button class="action-btn edit-btn" data-id="${item.id}">Edit</button>
-              <button class="action-btn delete-btn" data-id="${item.id}">Delete</button>
-              `}
-            </div>
-          </td>
-        `;
-
-        row.addEventListener("click", (e) => {
-          if (!e.target.classList.contains("action-btn")) {
-            this._selectRow(row);
-          }
-        });
-
-        const editBtn = row.querySelector(".edit-btn");
-        const deleteBtn = row.querySelector(".delete-btn");
-
-        editBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          this._editRow(item.id);
-        });
-
-        deleteBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          this._deleteRow(item.id);
-        });
-
-        this._tableBody.appendChild(row);
-      });
     }
 
     _selectRow(row) {
