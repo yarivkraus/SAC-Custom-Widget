@@ -1,6 +1,6 @@
 {
     "id": "com.yarivkraus.tablewidget",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "name": "Yariv's Table Widget",
     "description": "Custom SAC widget from yarivkraus",
     "newInstancePrefix": "TableWidget",
@@ -12,14 +12,14 @@
         {
             "kind": "main",
             "tag": "com-yarivkraus-tablewidget",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=5",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js?v=6",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
             "tag": "com-yarivkraus-tablewidget-styling",
-            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=5",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js?v=6",
             "integrity": "",
             "ignoreIntegrity": true
         }
