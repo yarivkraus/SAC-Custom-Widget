@@ -12,14 +12,14 @@
         {
             "kind": "main",
             "tag": "com-sap-sample-tablewidget",
-            "url": "https://github.com/yarivkraus/SAC-Custom-Widget/edit/main/main.js",
+            "url": "https://raw.githubusercontent.com/yarivkraus/SAC-Custom-Widget/main/main.js",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
             "tag": "com-sap-sample-tablewidget-styling",
-            "url": "https://github.com/yarivkraus/SAC-Custom-Widget/edit/main/styling.js",
+            "url": "https://raw.githubusercontent.com/yarivkraus/SAC-Custom-Widget/main/styling.js",
             "integrity": "",
             "ignoreIntegrity": true
         }
@@ -77,5 +77,4 @@
             ]
         }
     }
-
 }
