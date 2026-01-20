@@ -12,14 +12,14 @@
         {
             "kind": "main",
             "tag": "com-sap-sample-tablewidget",
-            "url": "https://raw.githubusercontent.com/yarivkraus/SAC-Custom-Widget/main/main.js",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/main.js",
             "integrity": "",
             "ignoreIntegrity": true
         },
         {
             "kind": "styling",
             "tag": "com-sap-sample-tablewidget-styling",
-            "url": "https://raw.githubusercontent.com/yarivkraus/SAC-Custom-Widget/main/styling.js",
+            "url": "https://cdn.jsdelivr.net/gh/yarivkraus/SAC-Custom-Widget@main/styling.js",
             "integrity": "",
             "ignoreIntegrity": true
         }
