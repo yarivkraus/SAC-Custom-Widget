@@ -1,4 +1,5 @@
 (function () {
+  console.log("SAC Widget Styling - Script Execution Started (v1.0.3)");
   let template = document.createElement("template");
   template.innerHTML = `
     <style>
@@ -50,7 +51,7 @@
     </style>
     
     <div class="styling-panel">
-      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.2</div>
+      <div style="font-size: 10px; color: #999; margin-bottom: 10px;">Styling Panel v1.0.3</div>
       <div class="styling-section">
         <label class="styling-label" for="titleInput">Widget Title</label>
         <input type="text" class="styling-input" id="titleInput" placeholder="Enter widget title">
